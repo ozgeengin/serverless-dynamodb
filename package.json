@@ -1,0 +1,13 @@
+{
+  "name": "serverless-cloudwatch",
+  "version": "1.0.0",
+  "description": "serverless-cloudwatch",
+  "main": "handler.js",
+  "keywords": [],
+  "author": "Ozge Engin",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.171.0",
+    "uuid": "^3.1.0"
+  }
+}

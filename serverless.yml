@@ -1,0 +1,70 @@
+service: serverless-cloudwatch
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  profile: default
+  region: eu-central-1
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "*"
+
+functions:
+  saveItem:
+    handler: handler.saveItem
+    events:
+      - http:
+          path: item
+          method: post
+  getItem:
+    handler: handler.getItem
+    events:
+      - http:
+          path: item/{itemId}
+          method: get
+  getAllItems:
+    handler: handler.getAllItems
+    events:
+      - http:
+          path: items
+          method: get
+  deleteItem:
+    handler: handler.deleteItem
+    events:
+      - http:
+          path: item/{itemId}
+          method: delete
+  updateItem:
+    handler: handler.updateItem
+    events:
+      - http:
+          path: item/{itemId}
+          method: put
+
+resources:
+  Resources:
+    DynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: "itemId"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "itemId"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
