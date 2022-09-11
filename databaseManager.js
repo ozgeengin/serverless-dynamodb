@@ -1,12 +1,8 @@
 'use strict';
 
-
 const AWS = require('aws-sdk');
-
 const db = new AWS.DynamoDB.DocumentClient();
-
 const TABLE_NAME = process.env.DYNAMODB_TABLE;
-
 
 module.exports.saveItem = item => {
     const params = {
